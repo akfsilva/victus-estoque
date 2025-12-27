@@ -1,11 +1,11 @@
 /**
- * VICTUS MAINFRAME - SERVICE WORKER V1.0
- * Gerencia o cache para operação offline e instalação PWA.
+ * VICTUS MAINFRAME - SERVICE WORKER FINAL
+ * Otimizado para funcionamento offline total e conversão para APK.
  */
 
-const CACHE_NAME = "victus-mainframe-v1";
+const CACHE_NAME = "victus-mainframe-v1.0.0";
 
-// Lista de arquivos vitais para o funcionamento offline
+// Lista de ativos para cache inicial
 const ASSETS_TO_CACHE = [
     "./",
     "./index.html",
@@ -15,46 +15,47 @@ const ASSETS_TO_CACHE = [
     "./icon.png"
 ];
 
-// Instalação: Salva os recursos estáticos no armazenamento de cache do navegador
+// Instalação: Grava os arquivos no cache
 self.addEventListener("install", (event) => {
-    // Força o Service Worker a se tornar o ativo imediatamente
-    self.skipWaiting();
-    
+    self.skipWaiting(); // Força a ativação do novo SW sem esperar abas fecharem
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log("VICTUS: CACHE_SISTEMA_OPERACIONAL_GRAVADO");
+            console.log("VICTUS: SISTEMA DE ARQUIVOS EM CACHE");
             return cache.addAll(ASSETS_TO_CACHE);
         })
     );
 });
 
-// Ativação: Limpa versões antigas do cache para evitar conflitos de código
+// Ativação: Limpa versões antigas do cache para não travar o app
 self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cache) => {
                     if (cache !== CACHE_NAME) {
-                        console.log("VICTUS: LIMPANDO_CACHE_OBSOLETO", cache);
+                        console.log("VICTUS: REMOVENDO CACHE OBSOLETO:", cache);
                         return caches.delete(cache);
                     }
                 })
             );
         })
     );
-    // Garante que o SW controle a página imediatamente
-    return self.clients.claim();
+    return self.clients.claim(); // Assume o controle da página imediatamente
 });
 
-// Interceptação de Busca: Tenta carregar do cache primeiro, se falhar, busca na rede
+// Estratégia: Cache First, Network Fallback
+// Prioriza o carregamento offline instantâneo
 self.addEventListener("fetch", (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
-            // Retorna o arquivo do cache ou faz a requisição normal
-            return response || fetch(event.request).catch(() => {
-                // Se ambos falharem (offline e sem cache), você poderia retornar uma página de erro aqui
-                console.error("VICTUS: FALHA_AO_RECUPERAR_RECURSO_OFFLINE");
+            // Retorna o recurso do cache se existir, senão busca na rede
+            return response || fetch(event.request).then((networkResponse) => {
+                // Opcional: Você poderia adicionar novos recursos ao cache aqui
+                return networkResponse;
             });
+        }).catch(() => {
+            // Caso ocorra erro total (offline e sem cache), garante que o app não quebre
+            console.error("VICTUS: RECURSO NÃO ENCONTRADO EM MODO OFFLINE");
         })
     );
 });
