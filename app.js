@@ -1,4 +1,4 @@
-const DB_KEY = "victus_mainframe_v1";
+const DB_KEY = "victus_v1_main";
 let items = JSON.parse(localStorage.getItem(DB_KEY)) || [];
 let folders = {};
 let refVisible = false;
@@ -69,7 +69,7 @@ window.render = () => {
                 <div class="item-card">
                     <div class="item-title"><span>> ${i.name}</span> <span>${i.qty} ${i.unit}</span></div>
                     <div class="suggest-box">
-                        <span>SUGESTAO_AUTONOMA: ${sug} ${i.unit}</span>
+                        <span>SUGESTAO: ${sug} ${i.unit}</span>
                         <button onclick="setGoal(${i.id}, ${sug})">APLICAR</button>
                     </div>
                     <div class="val-grid">
@@ -80,7 +80,7 @@ window.render = () => {
                     </div>
                     <div class="bar-wrap ${p < 30 ? 'warning' : ''}"><div class="bar-core" style="width:${p}%"></div></div>
                     <input type="text" style="width:100%; background:transparent; border:none; color:var(--dim); font-size:9px;" value="${i.note}" placeholder="SEM NOTAS" onchange="upd(${i.id},'note',this.value)">
-                    <button class="btn-del" onclick="del(${i.id})">[ REMOVER_ITEM ]</button>
+                    <button class="btn-del" onclick="del(${i.id})">[ EXCLUIR ]</button>
                 </div>`;
         }).join("");
 
@@ -94,7 +94,7 @@ window.render = () => {
 window.exportData = () => {
     const b = new Blob([JSON.stringify(items, null, 2)], {type: "application/json"});
     const a = document.createElement('a'); a.href = URL.createObjectURL(b);
-    a.download = "victus_mainframe_backup.json"; a.click();
+    a.download = "victus_backup.json"; a.click();
 };
 
 window.importData = (e) => {
@@ -104,7 +104,9 @@ window.importData = (e) => {
 };
 
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
+    window.addEventListener('load', () => { 
+        navigator.serviceWorker.register('./sw.js').catch(e => console.error(e)); 
+    });
 }
 
 render();
