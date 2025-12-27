@@ -1,61 +1,51 @@
 /**
- * VICTUS MAINFRAME - SERVICE WORKER FINAL
- * Otimizado para funcionamento offline total e conversão para APK.
+ * VICTUS MAINFRAME - SERVICE WORKER (WORKBOX EDITION)
+ * Baseado nas recomendações do PWABuilder para máxima compatibilidade com APK.
  */
 
-const CACHE_NAME = "victus-mainframe-v1.0.0";
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
-// Lista de ativos para cache inicial
-const ASSETS_TO_CACHE = [
-    "./",
-    "./index.html",
-    "./style.css",
-    "./app.js",
-    "./manifest.json",
-    "./icon.png"
-];
+const CACHE = "victus-offline-v1";
 
-// Instalação: Grava os arquivos no cache
-self.addEventListener("install", (event) => {
-    self.skipWaiting(); // Força a ativação do novo SW sem esperar abas fecharem
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log("VICTUS: SISTEMA DE ARQUIVOS EM CACHE");
-            return cache.addAll(ASSETS_TO_CACHE);
-        })
-    );
+// Força o Service Worker a se atualizar assim que houver mudança no código
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
-// Ativação: Limpa versões antigas do cache para não travar o app
-self.addEventListener("activate", (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cache) => {
-                    if (cache !== CACHE_NAME) {
-                        console.log("VICTUS: REMOVENDO CACHE OBSOLETO:", cache);
-                        return caches.delete(cache);
-                    }
-                })
-            );
-        })
-    );
-    return self.clients.claim(); // Assume o controle da página imediatamente
-});
+if (workbox.navigationPreload.isSupported()) {
+  workbox.navigationPreload.enable();
+}
 
-// Estratégia: Cache First, Network Fallback
-// Prioriza o carregamento offline instantâneo
-self.addEventListener("fetch", (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            // Retorna o recurso do cache se existir, senão busca na rede
-            return response || fetch(event.request).then((networkResponse) => {
-                // Opcional: Você poderia adicionar novos recursos ao cache aqui
-                return networkResponse;
-            });
-        }).catch(() => {
-            // Caso ocorra erro total (offline e sem cache), garante que o app não quebre
-            console.error("VICTUS: RECURSO NÃO ENCONTRADO EM MODO OFFLINE");
-        })
-    );
+// ESTRATÉGIA: StaleWhileRevalidate
+// Ele carrega o que está no cache instantaneamente (pro app abrir rápido)
+// e busca atualizações em segundo plano.
+workbox.routing.registerRoute(
+  new RegExp('/*'),
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: CACHE
+  })
+);
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.mode === 'navigate') {
+    event.respondWith((async () => {
+      try {
+        // Tenta usar o preload (acelera o carregamento se houver rede)
+        const preloadResp = await event.preloadResponse;
+        if (preloadResp) {
+          return preloadResp;
+        }
+
+        const networkResp = await fetch(event.request);
+        return networkResp;
+      } catch (error) {
+        // Se a rede falhar (estiver offline), ele entrega o index.html do cache
+        const cache = await caches.open(CACHE);
+        const cachedResp = await cache.match('index.html');
+        return cachedResp;
+      }
+    })());
+  }
 });
