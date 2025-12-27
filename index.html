@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#e8e4d9">
+    <title>VICTUS | ESTOQUE</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="vignette"></div>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="symbol">V</div>
+                <div class="titles">
+                    <h1>VICTUS</h1>
+                    <small>ESTOQUE DE EMERGÊNCIA</small>
+                </div>
+            </div>
+            
+            <div class="settings">
+                <div class="field">
+                    <label>PROSPECTUS (MENSES)</label>
+                    <input type="number" id="calc_meses" value="12" onchange="render()">
+                </div>
+            </div>
+        </header>
+
+        <section class="input-area">
+            <h3>[ REGISTRAR NOVAS PROVISÕES ]</h3>
+            <div class="form-grid">
+                <input type="text" id="n" placeholder="NOME DO ITEM">
+                <input type="text" id="c" placeholder="CATEGORIA">
+                <input type="text" id="u" placeholder="UNIDADE (KG, L, UN)">
+                <input type="number" id="q" placeholder="QTD ATUAL">
+                <input type="number" id="cons" placeholder="CONS. DIÁRIO">
+                <input type="number" id="p_item" placeholder="PESSOAS" value="1">
+                <input type="text" id="obs" placeholder="NOTAS / MEMORANDUM">
+                <button class="btn-primary" onclick="add()">ADICIONAR AO INVENTÁRIO</button>
+            </div>
+        </section>
+
+        <div id="estoque"></div>
+
+        <section class="manual">
+            <div class="manual-btn" onclick="toggleTable()">[ TABELA DE REFERÊNCIA ]</div>
+            <div id="refTableContent" class="manual-data hidden">
+                <div class="data-row"><span>CEREALIA</span><span>6.0 KG / MÊS</span></div>
+                <div class="data-row"><span>AQUA</span><span>60 L / MÊS</span></div>
+                <div class="data-row"><span>SAL</span><span>0.5 KG / MÊS</span></div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="actions">
+                <button class="btn-side" onclick="exportData()">EXPORTAR (.JSON)</button>
+                <label class="btn-side">
+                    IMPORTAR (.JSON)
+                    <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+                </label>
+            </div>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
