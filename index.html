@@ -3,64 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#e8e4d9">
-    <title>VICTUS | ESTOQUE</title>
+    <meta name="theme-color" content="#1a1a1a">
+    <title>VICTUS | MAINFRAME</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <div class="vignette"></div>
-    <div class="container">
+    <div class="crt-overlay"></div>
+    <div class="terminal">
         <header>
             <div class="brand">
-                <div class="symbol">V</div>
-                <div class="titles">
-                    <h1>VICTUS</h1>
-                    <small>ESTOQUE DE EMERGÊNCIA</small>
+                <div class="logo-box">V</div>
+                <div class="header-text">
+                    <h1>VICTUS(TM) ESTOQUE DE EMERGÊNCIA</h1>
+                    <p>SISTEMA DE GERENCIAMENTO DE PROVISÕES V1.0</p>
                 </div>
             </div>
-            
-            <div class="settings">
-                <div class="field">
-                    <label>PROSPECTUS (MENSES)</label>
-                    <input type="number" id="calc_meses" value="12" onchange="render()">
-                </div>
+            <div class="sys-info">
+                <span>ESTADO: OPERACIONAL</span>
+                <span>DATA: 2025-12-27</span>
             </div>
         </header>
 
-        <section class="input-area">
-            <h3>[ REGISTRAR NOVAS PROVISÕES ]</h3>
-            <div class="form-grid">
-                <input type="text" id="n" placeholder="NOME DO ITEM">
+        <section class="config-bar">
+            <label>PROSPECTO DE SOBREVIVÊNCIA (MESES):</label>
+            <input type="number" id="calc_meses" value="12" onchange="render()">
+        </section>
+
+        <section class="input-panel">
+            <div class="panel-title">[ ENTRADA DE DADOS ]</div>
+            <div class="grid-form">
+                <input type="text" id="n" placeholder="NOME_DO_ITEM">
                 <input type="text" id="c" placeholder="CATEGORIA">
-                <input type="text" id="u" placeholder="UNIDADE (KG, L, UN)">
-                <input type="number" id="q" placeholder="QTD ATUAL">
-                <input type="number" id="cons" placeholder="CONS. DIÁRIO">
+                <input type="text" id="u" placeholder="UNIDADE_MEDIDA">
+                <input type="number" id="q" placeholder="QTD_ATUAL">
+                <input type="number" id="cons" placeholder="CONSUMO_DIARIO">
                 <input type="number" id="p_item" placeholder="PESSOAS" value="1">
-                <input type="text" id="obs" placeholder="NOTAS / MEMORANDUM">
-                <button class="btn-primary" onclick="add()">ADICIONAR AO INVENTÁRIO</button>
+                <input type="text" id="obs" placeholder="NOTAS_ADICIONAIS">
+                <button class="btn-main" onclick="add()">EXECUTAR_CADASTRO</button>
             </div>
         </section>
 
         <div id="estoque"></div>
 
-        <section class="manual">
-            <div class="manual-btn" onclick="toggleTable()">[ TABELA DE REFERÊNCIA ]</div>
-            <div id="refTableContent" class="manual-data hidden">
-                <div class="data-row"><span>CEREALIA</span><span>6.0 KG / MÊS</span></div>
-                <div class="data-row"><span>AQUA</span><span>60 L / MÊS</span></div>
-                <div class="data-row"><span>SAL</span><span>0.5 KG / MÊS</span></div>
+        <section class="reference-area">
+            <div class="ref-toggle" onclick="toggleTable()">[ EXIBIR_TABELA_REFERENCIA ]</div>
+            <div id="refTableContent" class="ref-content hidden">
+                <pre>
+CATEGORIA          QTD/MES (ADULTO)
+-----------------------------------
+AGUA POTAVEL       90.0 L
+CEREAIS/GRAOS      12.0 KG
+PROTEINAS          04.5 KG
+OLEOS/LIPIDIOS     01.0 L
+SAL/SODIO          00.5 KG
+-----------------------------------
+                </pre>
             </div>
         </section>
 
         <footer>
-            <div class="actions">
-                <button class="btn-side" onclick="exportData()">EXPORTAR (.JSON)</button>
-                <label class="btn-side">
-                    IMPORTAR (.JSON)
+            <div class="footer-actions">
+                <button onclick="exportData()">DOWNLOAD_BACKUP</button>
+                <label class="btn-label">
+                    UPLOAD_BACKUP
                     <input type="file" id="importFile" style="display:none" onchange="importData(event)">
                 </label>
             </div>
+            <div class="copyright">VICTUS CORP (C) 2025 - TODOS OS DIREITOS RESERVADOS</div>
         </footer>
     </div>
     <script src="app.js"></script>
