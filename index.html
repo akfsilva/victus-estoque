@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1a1a1a">
-    <title>VICTUS | MAINFRAME</title>
-    <link rel="stylesheet" href="style.css">
+    <title>VICTUS | SISTEMA DE ESTOQUE</title>
+    
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="crt-overlay"></div>
     <div class="terminal">
         <header>
             <div class="brand">
-                <div class="logo-box">V</div>
+                <img src="icon.png" alt="V" class="app-logo">
                 <div class="header-text">
                     <h1>VICTUS(TM) ESTOQUE DE EMERGÊNCIA</h1>
-                    <p>SISTEMA DE GERENCIAMENTO DE PROVISÕES V1.0</p>
+                    <p>PROTOCOLO DE SOBREVIVÊNCIA V1.0</p>
                 </div>
             </div>
             <div class="sys-info">
@@ -26,7 +29,7 @@
         </header>
 
         <section class="config-bar">
-            <label>PROSPECTO DE SOBREVIVÊNCIA (MESES):</label>
+            <label>META DE SOBREVIVÊNCIA (MESES):</label>
             <input type="number" id="calc_meses" value="12" onchange="render()">
         </section>
 
@@ -35,11 +38,11 @@
             <div class="grid-form">
                 <input type="text" id="n" placeholder="NOME_DO_ITEM">
                 <input type="text" id="c" placeholder="CATEGORIA">
-                <input type="text" id="u" placeholder="UNIDADE_MEDIDA">
+                <input type="text" id="u" placeholder="UNIDADE (KG, L, UN)">
                 <input type="number" id="q" placeholder="QTD_ATUAL">
-                <input type="number" id="cons" placeholder="CONSUMO_DIARIO">
+                <input type="number" id="cons" placeholder="CONS_DIARIO_POR_PESSOA">
                 <input type="number" id="p_item" placeholder="PESSOAS" value="1">
-                <input type="text" id="obs" placeholder="NOTAS_ADICIONAIS">
+                <input type="text" id="obs" placeholder="NOTAS">
                 <button class="btn-main" onclick="add()">EXECUTAR_CADASTRO</button>
             </div>
         </section>
